@@ -435,41 +435,82 @@ h1, h2, h3, h4 {
   border: 0;
 }
 
-/* ============ DARK MODE ============ */
+/* ============ DARK MODE (DEEP SHINING BLACK) ============ */
+:root {
+  --bg-dark: #000000;
+  --bg-card-dark: #0a0a0a;
+  --bg-elevated-dark: #111111;
+  --border-dark: #1f1f1f;
+  --text-dark: #e8e8e8;
+  --text-muted-dark: #888888;
+  --gold-glow: #ffb86c;
+  --green-glow: #3ddc84;
+}
+
 body.dark-mode {
   background: var(--bg-dark);
   color: var(--text-dark);
 }
 
+/* Header — glossy black */
 body.dark-mode .app-header {
-  background: #0a0a12;
+  background: linear-gradient(180deg, #0a0a0a 0%, #000000 100%);
+  border-bottom: 1px solid var(--border-dark);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
 }
 
+/* Logo glow */
+body.dark-mode .logo .highlight {
+  color: var(--gold-glow);
+  text-shadow: 0 0 10px rgba(255, 184, 108, 0.4);
+}
+
+/* Sidebar — deep black with subtle border */
 body.dark-mode .sidebar {
-  background: #1a1a2e;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  background: var(--bg-card-dark);
+  border: 1px solid var(--border-dark);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
 }
 
 body.dark-mode .sidebar-nav a {
   color: var(--text-dark);
+  border-left-color: transparent;
 }
 
-body.dark-mode .sidebar-nav a:hover,
+body.dark-mode .sidebar-nav a:hover {
+  background: rgba(61, 220, 132, 0.08);
+  color: var(--green-glow);
+}
+
 body.dark-mode .sidebar-nav a.active {
-  background: rgba(44, 122, 77, 0.2);
-  color: var(--gold);
+  background: rgba(61, 220, 132, 0.12);
+  color: var(--green-glow);
+  border-left-color: var(--green-glow);
+  text-shadow: 0 0 8px rgba(61, 220, 132, 0.3);
 }
 
+/* Snapshot cards — glossy black */
 body.dark-mode .snapshot-card,
 body.dark-mode .movers-list li,
 body.dark-mode .stock-card {
-  background: #1a1a2e;
+  background: var(--bg-card-dark);
   color: var(--text-dark);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-dark);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
 }
 
+body.dark-mode .snapshot-card:hover,
+body.dark-mode .movers-list li:hover,
+body.dark-mode .stock-card:hover {
+  border-color: rgba(61, 220, 132, 0.3);
+  box-shadow: 0 4px 20px rgba(61, 220, 132, 0.1);
+}
+
+/* Featured card — subtle green shine */
 body.dark-mode .snapshot-card.featured {
-  background: linear-gradient(135deg, #1a2f24 0%, #1a1a2e 100%);
+  background: linear-gradient(135deg, #0a1f14 0%, #0a0a0a 100%);
+  border-color: var(--green-glow);
+  box-shadow: 0 0 20px rgba(61, 220, 132, 0.15);
 }
 
 body.dark-mode .snapshot-card h3,
@@ -477,9 +518,14 @@ body.dark-mode .snapshot-card .value {
   color: var(--text-dark);
 }
 
+body.dark-mode .snapshot-card .value {
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.05);
+}
+
+/* Market stats bar */
 body.dark-mode .market-stats {
-  background: #1a1a2e;
-  border-color: #333;
+  background: var(--bg-card-dark);
+  border: 1px solid var(--border-dark);
 }
 
 body.dark-mode .stat-value,
@@ -488,21 +534,155 @@ body.dark-mode .stock-symbol {
   color: var(--text-dark);
 }
 
-body.dark-mode h2 {
+body.dark-mode .stat-label {
+  color: var(--text-muted-dark);
+}
+
+/* Headings */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3 {
   color: var(--text-dark);
 }
 
+/* Search form */
+body.dark-mode .app-header .search-form input {
+  background: var(--bg-elevated-dark);
+  color: var(--text-dark);
+  border: 1px solid var(--border-dark);
+}
+
+body.dark-mode .app-header .search-form input::placeholder {
+  color: var(--text-muted-dark);
+}
+
+/* Icon buttons */
+body.dark-mode .icon-btn {
+  border-color: var(--border-dark);
+  color: var(--text-dark);
+}
+
+body.dark-mode .icon-btn:hover {
+  background: rgba(61, 220, 132, 0.1);
+  border-color: var(--green-glow);
+}
+
+/* Positive / Negative — brighter in dark mode */
+body.dark-mode .positive {
+  color: var(--green-glow);
+  text-shadow: 0 0 6px rgba(61, 220, 132, 0.3);
+}
+
+body.dark-mode .negative {
+  color: #ff5c5c;
+  text-shadow: 0 0 6px rgba(255, 92, 92, 0.3);
+}
+
+/* Stock name and exchange */
 body.dark-mode .stock-name {
-  color: #a0a0a0;
+  color: var(--text-muted-dark);
 }
 
 body.dark-mode .stock-exchange {
-  background: #333;
-  color: #ccc;
+  background: var(--bg-elevated-dark);
+  color: var(--text-muted-dark);
+  border: 1px solid var(--border-dark);
 }
 
+/* Mover links */
+body.dark-mode .movers-list a {
+  color: var(--text-dark);
+}
+
+/* Search results heading */
+body.dark-mode .results h2 {
+  color: var(--text-dark);
+}
+
+/* Footer — glossy black */
 body.dark-mode footer {
-  background: #0a0a12;
+  background: linear-gradient(180deg, #000000 0%, #0a0a0a 100%);
+  border-top: 1px solid var(--border-dark);
+  color: var(--text-muted-dark);
+}
+
+/* Scrollbar (dark) */
+body.dark-mode::-webkit-scrollbar {
+  width: 10px;
+}
+
+body.dark-mode::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+body.dark-mode::-webkit-scrollbar-thumb {
+  background: #1f1f1f;
+  border-radius: 5px;
+}
+
+body.dark-mode::-webkit-scrollbar-thumb:hover {
+  background: #2f2f2f;
+}
+
+
+/* Fix: Prevent number overflow in snapshot cards */
+.snapshot-card .value {
+  font-size: clamp(0.9rem, 2.2vw, 1.3rem);
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.2;
+}
+
+/* Specifically for the featured card which has larger numbers */
+.snapshot-card.featured .value {
+  font-size: clamp(0.95rem, 2vw, 1.15rem);
+}
+
+/* Make all snapshot cards flexibly sized */
+.snapshot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ============ SNAPSHOT CARD — RESPONSIVE VALUES ============ */
+.snapshot-card .value {
+  font-size: clamp(0.85rem, 3.5vw, 1.3rem);
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+/* Featured card (NGX) — slightly smaller */
+.snapshot-card.featured .value {
+  font-size: clamp(0.9rem, 3vw, 1.2rem);
+}
+
+/* Mobile: reduce card padding and use smaller text */
+@media (max-width: 600px) {
+  .snapshot-card {
+    padding: 1rem 0.75rem;
+  }
+
+  .snapshot-card h3 {
+    font-size: 0.8rem;
+    line-height: 1.2;
+    margin-bottom: 0.4rem;
+  }
+
+  .snapshot-card .value {
+    font-size: clamp(0.8rem, 4vw, 1rem);
+  }
+
+  .snapshot-card.featured .value {
+    font-size: clamp(0.85rem, 3.5vw, 1rem);
+  }
+
+  .snapshot-card .change {
+    font-size: 0.75rem;
+  }
 }
 
 /* ============ RESPONSIVE FOR ICON BUTTONS ============ */
@@ -524,7 +704,97 @@ body.dark-mode footer {
     padding: 6px 10px;
   }
 }
+/* ============ CSS ANIMATIONS ============ */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Fade-in animation for cards */
+.snapshot-card,
+.movers-list li,
+.stock-card {
+  animation: fadeIn 0.4s ease-out both;
+}
+
+.snapshot-card:nth-child(1) { animation-delay: 0.05s; }
+.snapshot-card:nth-child(2) { animation-delay: 0.1s; }
+.snapshot-card:nth-child(3) { animation-delay: 0.15s; }
+.snapshot-card:nth-child(4) { animation-delay: 0.2s; }
+.snapshot-card:nth-child(5) { animation-delay: 0.25s; }
+.snapshot-card:nth-child(6) { animation-delay: 0.3s; }
+
+/* Loading pulse */
+.loading {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Sidebar slide-in */
+.sidebar-nav li {
+  animation: slideInLeft 0.3s ease-out both;
+}
+
+.sidebar-nav li:nth-child(1) { animation-delay: 0.05s; }
+.sidebar-nav li:nth-child(2) { animation-delay: 0.1s; }
+.sidebar-nav li:nth-child(3) { animation-delay: 0.15s; }
+.sidebar-nav li:nth-child(4) { animation-delay: 0.2s; }
+.sidebar-nav li:nth-child(5) { animation-delay: 0.25s; }
+
+/* Search button pulse on hover */
+.search-form button:active {
+  transform: scale(0.97);
+}
+
+/* Smooth theme transition */
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode .app-header,
+body.dark-mode .sidebar,
+body.dark-mode .snapshot-card,
+body.dark-mode .movers-list li,
+body.dark-mode .stock-card,
+body.dark-mode .market-stats {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 /* ============ FOOTER ============ */
 footer {
   background: var(--navy);

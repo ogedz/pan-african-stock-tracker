@@ -16,7 +16,7 @@ async function loadMarketSnapshot() {
       <div class="snapshot-grid">
         <div class="snapshot-card featured">
           <h3>🇳🇬 NGX All-Share</h3>
-          <p class="value">${ngnData.asi.toLocaleString()}</p>
+          <p class="value">${Math.round(ngnData.asi).toLocaleString()}</p>
           <p class="change ${ngnData.asi_change >= 0 ? "positive" : "negative"}">
             ${ngnData.asi_change >= 0 ? "▲" : "▼"} ${ngnData.asi_change.toFixed(2)} (${ngnData.asi_change_percent.toFixed(2)}%)
           </p>
