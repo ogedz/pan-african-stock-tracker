@@ -26,7 +26,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       "http://localhost:4173",
-      "https://your-app-name.onrender.com",
+      "https://pan-african-stock-tracker-1.onrender.com", 
     ],
   })
 );
