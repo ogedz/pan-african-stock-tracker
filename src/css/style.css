@@ -681,6 +681,7 @@ body.dark-mode::-webkit-scrollbar-thumb:hover {
   }
 
   .snapshot-card .change {
+    
     font-size: 0.75rem;
   }
 }
