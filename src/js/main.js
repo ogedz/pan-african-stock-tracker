@@ -1,5 +1,6 @@
 // src/js/main.js
 import StockData from "./StockData.mjs";
+import { loadHeaderFooter } from "./utils.mjs";
 
 const stockData = new StockData();
 
@@ -259,6 +260,10 @@ function initUserButton() {
 
 async function init() {
   console.log("Pan-African Stock Tracker initialized");
+
+  // Load header/footer FIRST (before anything else that might need the DOM)
+  await loadHeaderFooter();
+
   initSidebar();
   initTheme();
   initUserButton();

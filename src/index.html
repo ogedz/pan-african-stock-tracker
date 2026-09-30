@@ -3,94 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- SEO Meta Tags -->
+    <meta name="description" content="Track stocks across African exchanges in one dashboard" />
     <title>Pan-African Stock Tracker | Track African Stock Markets</title>
-    <meta
-      name="description"
-      content="Track stocks across African exchanges in one dashboard. Real-time prices from NGX, JSE, EGX, and more. Build your portfolio and watchlist."
-    />
     <meta name="author" content="Monday Ogedengbe" />
-    <meta
-      name="keywords"
-      content="African stocks, NGX, JSE, EGX, stock tracker, African markets, portfolio, investing"
-    />
-
-    <!-- Open Graph (Social Media) -->
-    <meta property="og:title" content="Pan-African Stock Tracker" />
-    <meta
-      property="og:description"
-      content="Track stocks across African exchanges in one dashboard."
-    />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://your-app-name.onrender.com" />
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Pan-African Stock Tracker" />
-    <meta
-      name="twitter:description"
-      content="Track stocks across African exchanges in one dashboard."
-    />
-
-    <!-- Theme Color -->
     <meta name="theme-color" content="#1a1a2e" />
-
-    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto:wght@400;500&family=JetBrains+Mono&display=swap"
       rel="stylesheet"
     />
-
-    <!-- Styles -->
     <link rel="stylesheet" href="/css/style.css" />
   </head>
 
   <body>
-    <!-- Header -->
-    <header class="app-header">
-      <button id="menu-toggle" class="menu-toggle" aria-label="Open menu">☰</button>
+    <!-- Header (loaded dynamically) -->
+    <header class="app-header" id="main-header"></header>
 
-      <div class="logo">
-        <a href="/index.html">
-          Pan-African <span class="highlight">Stocks</span>
-        </a>
-      </div>
-
-      <div class="header-actions">
-        <div class="search-form">
-          <input
-            type="text"
-            id="search-input"
-            placeholder="Search stocks..."
-            aria-label="Search stocks"
-          />
-          <button id="search-btn" aria-label="Search">Search</button>
-        </div>
-
-        <!-- Theme Toggle -->
-        <button id="theme-toggle" class="icon-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
-          🌙
-        </button>
-
-        <!-- User Icon -->
-        <button id="user-btn" class="icon-btn" aria-label="User account" title="User account">
-          👤
-        </button>
-      </div>
-    </header>
-
-    <!-- Sidebar Overlay (mobile) -->
+    <!-- Sidebar Overlay -->
     <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
     <!-- App Layout -->
     <div class="app-layout">
-      <!-- Sidebar -->
       <aside id="sidebar" class="sidebar">
         <nav class="sidebar-nav" aria-label="Main navigation">
           <ul>
@@ -103,9 +38,7 @@
         </nav>
       </aside>
 
-      <!-- Main Content -->
       <main class="main-content">
-        <!-- Hero (visually hidden h1 for SEO) -->
         <h1 class="visually-hidden">Pan-African Stock Tracker</h1>
 
         <section class="market-snapshot">
@@ -139,9 +72,8 @@
       </main>
     </div>
 
-    <footer>
-      <p>&copy; 2026 Pan-African Stock Tracker. All rights reserved.</p>
-    </footer>
+    <!-- Footer (loaded dynamically) -->
+    <footer id="main-footer"></footer>
 
     <script type="module" src="/js/main.js"></script>
   </body>
