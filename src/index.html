@@ -3,76 +3,95 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Track stocks across African exchanges in one dashboard" />
-    <title>Pan-African Stock Tracker | Track African Stock Markets</title>
+    <title>Home | Pan-African Stock Tracker</title>
+    <meta
+      name="description"
+      content="Track NGX, JSE, and EGX stocks in one dashboard. Live prices, market snapshot, gainers, losers, portfolio, and watchlist for African retail investors."
+    />
     <meta name="author" content="Monday Ogedengbe" />
     <meta name="theme-color" content="#1a1a2e" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto:wght@400;500&family=JetBrains+Mono&display=swap"
-      rel="stylesheet"
+    <meta property="og:title" content="Pan-African Stock Tracker" />
+    <meta
+      property="og:description"
+      content="Unified dashboard for African stock exchanges — search, portfolio, alerts, and currency conversion."
     />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://pan-african-stock-tracker.onrender.com/"
+    />
+    <meta
+      property="og:image"
+      content="https://pan-african-stock-tracker.onrender.com/images/social-share.png"
+    />
+    <meta property="og:site_name" content="Pan-African Stock Tracker" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Pan-African Stock Tracker" />
+    <meta
+      name="twitter:description"
+      content="Unified dashboard for African stock exchanges — search, portfolio, alerts, and currency conversion."
+    />
+    <meta
+      name="twitter:image"
+      content="https://pan-african-stock-tracker.onrender.com/images/social-share.png"
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="/css/style.css" />
   </head>
-
   <body>
-    <!-- Header (loaded dynamically) -->
-    <header class="app-header" id="main-header"></header>
+    <header id="main-header" class="site-header"></header>
 
-    <!-- Sidebar Overlay -->
-    <div id="sidebar-overlay" class="sidebar-overlay"></div>
-
-    <!-- App Layout -->
-    <div class="app-layout">
-      <aside id="sidebar" class="sidebar">
-        <nav class="sidebar-nav" aria-label="Main navigation">
-          <ul>
-            <li><a href="/index.html" class="active"> Home</a></li>
-            <li><a href="/pages/portfolio/"> Portfolio</a></li>
-            <li><a href="/pages/watchlist/"> Watchlist</a></li>
-            <li><a href="/pages/alerts/"> Alerts</a></li>
-            <li><a href="/pages/settings/"> Settings</a></li>
-          </ul>
-        </nav>
-      </aside>
-
-      <main class="main-content">
-        <h1 class="visually-hidden">Pan-African Stock Tracker</h1>
-
-        <section class="market-snapshot">
-          <h2>Market Snapshot</h2>
-          <div id="market-snapshot">
-            <p>Loading market data...</p>
-          </div>
-        </section>
-
-        <section class="movers">
-          <div class="movers-column">
-            <h2>Top Gainers</h2>
-            <ul id="top-gainers" class="movers-list">
-              <li>Loading...</li>
-            </ul>
-          </div>
-          <div class="movers-column">
-            <h2>Top Losers</h2>
-            <ul id="top-losers" class="movers-list">
-              <li>Loading...</li>
-            </ul>
-          </div>
-        </section>
-
-        <section class="results">
-          <h2>Search Results</h2>
-          <ul id="stock-list" class="stock-list">
-            <li>Search for stocks above.</li>
-          </ul>
-        </section>
-      </main>
+    <div class="search-bar">
+      <label class="visually-hidden" for="searchInput">Search stocks</label>
+      <input
+        type="search"
+        id="searchInput"
+        placeholder="Search by ticker or company name..."
+        autocomplete="off"
+      />
+      <label class="visually-hidden" for="exchangeFilter"
+        >Filter by exchange</label
+      >
+      <select id="exchangeFilter">
+        <option value="ALL">All exchanges</option>
+      </select>
     </div>
 
-    <!-- Footer (loaded dynamically) -->
+    <main>
+      <h1 class="visually-hidden">Pan-African Stock Market Tracker</h1>
+
+      <section id="snapshotSection" aria-labelledby="snapshotHeading">
+        <h2 id="snapshotHeading">Market Snapshot</h2>
+        <div id="snapshotGrid" class="snapshot-grid">
+          <div
+            class="spinner"
+            role="status"
+            aria-label="Loading market snapshot"
+          ></div>
+        </div>
+      </section>
+
+      <section id="searchResultsSection" hidden>
+        <h2>Search Results</h2>
+        <ul id="searchResultsList" class="stock-list"></ul>
+      </section>
+
+      <section
+        id="gainersLosersSection"
+        class="two-col"
+        aria-label="Top movers"
+      >
+        <div>
+          <h2>Top Gainers</h2>
+          <ul id="gainersList" class="stock-list"></ul>
+        </div>
+        <div>
+          <h2>Top Losers</h2>
+          <ul id="losersList" class="stock-list"></ul>
+        </div>
+      </section>
+    </main>
+
     <footer id="main-footer"></footer>
 
     <script type="module" src="/js/main.js"></script>

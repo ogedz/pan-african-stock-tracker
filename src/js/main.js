@@ -1,276 +1,157 @@
-// src/js/main.js
-import StockData from "./StockData.mjs";
-import { loadHeaderFooter } from "./utils.mjs";
+import {
+  getStocks,
+  getIndices,
+  getTopGainers,
+  getTopLosers,
+  getDataSourceStatus,
+} from "./StockData.mjs";
+import { searchStocks, listExchanges } from "./Search.mjs";
+import { formatPercent, loadHeaderFooter, qs, animateAllIn } from "./Utils.mjs";
+import { convertStockPrices, currencySymbol } from "./Currency.mjs";
 
-const stockData = new StockData();
+loadHeaderFooter();
 
-// ============ MARKET SNAPSHOT ============
-async function loadMarketSnapshot() {
-  const container = document.getElementById("market-snapshot");
-  if (!container) return;
+const snapshotGrid = qs("#snapshotGrid");
+const searchInput = qs("#searchInput");
+const exchangeFilter = qs("#exchangeFilter");
+const searchSection = qs("#searchResultsSection");
+const searchResultsList = qs("#searchResultsList");
+const gainersLosersSection = qs("#gainersLosersSection");
+const gainersList = qs("#gainersList");
+const losersList = qs("#losersList");
 
+function indexCardTemplate(index) {
+  const dir = index.changePercent >= 0 ? "up" : "down";
+  return `
+    <div class="snapshot-card fade-in">
+      <div class="exchange">${index.exchange}</div>
+      <div class="index-name">${index.name}</div>
+      <div class="value mono" data-animate="${index.value}" data-decimals="2">0.00</div>
+      <div class="${dir}">${formatPercent(index.changePercent)}</div>
+    </div>
+  `;
+}
+
+// Expects stocks already enriched by convertStockPrices (displayPrice,
+// displayChange, displayCurrency present).
+function stockCardTemplate(stock) {
+  const dir = stock.changePercent >= 0 ? "up" : "down";
+  const symbol = currencySymbol(stock.displayCurrency);
+  return `
+    <li class="stock-card fade-in">
+      <a href="/stock/index.html?symbol=${stock.symbol}">
+        <div class="symbol">${stock.symbol}</div>
+        <div class="name">${stock.name} &middot; ${stock.exchange}</div>
+        <div class="price-row">
+          <span class="mono" data-animate="${stock.displayPrice}" data-decimals="2" data-prefix="${symbol}">${symbol}0.00</span>
+          <span class="${dir}">${formatPercent(stock.changePercent)}</span>
+        </div>
+      </a>
+    </li>
+  `;
+}
+
+function renderDataSourceBadge() {
+  const status = getDataSourceStatus();
+  let existing = qs("#dataSourceBadge");
+  if (!existing) {
+    existing = document.createElement("p");
+    existing.id = "dataSourceBadge";
+    existing.className = "data-source-badge";
+    const section = qs("#snapshotSection");
+    if (section)
+      section.insertBefore(existing, section.firstChild?.nextSibling || null);
+    // place after h2
+    const h2 = section?.querySelector("h2");
+    if (h2) h2.insertAdjacentElement("afterend", existing);
+  }
+  const stocksLive = status.stocks === "live";
+  const indicesLive = status.indices === "live";
+  if (stocksLive || indicesLive) {
+    existing.innerHTML = "<span class=\"badge-live\">Live data</span> — prices refreshed from API (cached up to 2 min).";
+    existing.classList.remove("is-sample");
+  } else {
+    const reasons = [status.ngnError, status.finnhubError]
+      .filter(Boolean)
+      .join(" · ");
+    existing.innerHTML = `<span class="badge-sample">Sample data</span> — API keys missing or rejected. ${reasons ? `<span class="badge-detail">${reasons}</span>` : "Add valid keys to <code>.env</code> and restart."}`;
+    existing.classList.add("is-sample");
+  }
+}
+
+async function renderSnapshot() {
   try {
-    const ngnData = await stockData.getMarketSnapshot();
-    const africanMarkets = await stockData.getAfricanMarkets();
-
-    container.innerHTML = `
-      <div class="snapshot-grid">
-        <div class="snapshot-card featured">
-          <h3>🇳🇬 NGX All-Share</h3>
-          <p class="value">${Math.round(ngnData.asi).toLocaleString()}</p>
-          <p class="change ${ngnData.asi_change >= 0 ? "positive" : "negative"}">
-            ${ngnData.asi_change >= 0 ? "▲" : "▼"} ${ngnData.asi_change.toFixed(2)} (${ngnData.asi_change_percent.toFixed(2)}%)
-          </p>
-        </div>
-
-        ${africanMarkets
-          .map(
-            (market) => `
-          <div class="snapshot-card">
-            <h3>${market.flag} ${market.name}</h3>
-            <p class="value">$${market.price.toFixed(2)}</p>
-            <p class="change ${market.change >= 0 ? "positive" : "negative"}">
-              ${market.change >= 0 ? "▲" : "▼"} ${Math.abs(market.change).toFixed(2)} (${Math.abs(market.changePercent).toFixed(2)}%)
-            </p>
-          </div>
-        `
-          )
-          .join("")}
-      </div>
-
-      <div class="market-stats">
-        <div class="stat-item">
-          <span class="stat-label">Market Cap:</span>
-          <span class="stat-value">₦${(ngnData.market_cap.total / 1e12).toFixed(2)}T</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-label">Volume:</span>
-          <span class="stat-value">${(ngnData.volume / 1e6).toFixed(2)}M</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-label">Breadth:</span>
-          <span class="stat-value">
-            <span class="positive">${ngnData.breadth.advancers}▲</span>
-            <span class="negative">${ngnData.breadth.decliners}▼</span>
-          </span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-label">Deals:</span>
-          <span class="stat-value">${ngnData.deals.toLocaleString()}</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-label">Securities:</span>
-          <span class="stat-value">${ngnData.total_listed_securities}</span>
-        </div>
-      </div>
-    `;
+    const indices = await getIndices();
+    snapshotGrid.innerHTML = indices.map(indexCardTemplate).join("");
+    animateAllIn(snapshotGrid);
+    renderDataSourceBadge();
   } catch (error) {
     console.error("Failed to load market snapshot:", error);
-    container.innerHTML = "<p>Failed to load market data.</p>";
+    snapshotGrid.innerHTML = "<p>Unable to load market snapshot right now.</p>";
   }
 }
 
-// ============ STOCK SEARCH ============
-function initSearch() {
-  const searchInput = document.getElementById("search-input");
-  const searchBtn = document.getElementById("search-btn");
-  const stockList = document.getElementById("stock-list");
-
-  if (!searchInput || !searchBtn || !stockList) return;
-
-  async function performSearch() {
-    const query = searchInput.value.trim();
-    if (!query) {
-      stockList.innerHTML = "<li>Enter a stock symbol to search.</li>";
-      return;
-    }
-
-    stockList.innerHTML = "<li>Searching...</li>";
-
-    try {
-      const results = await stockData.searchStocks(query);
-
-      if (!results || results.length === 0) {
-        stockList.innerHTML = "<li>No stocks found.</li>";
-        return;
-      }
-
-      stockList.innerHTML = results
-        .slice(0, 10)
-        .map(
-          (stock) => `
-        <li class="stock-card">
-          <a href="/pages/stock/?symbol=${stock.symbol}">
-            <div class="stock-info">
-              <h3 class="stock-symbol">${stock.displaySymbol}</h3>
-              <p class="stock-name">${stock.description}</p>
-              <span class="stock-exchange">${stock.type}</span>
-            </div>
-          </a>
-        </li>
-      `
-        )
-        .join("");
-    } catch (error) {
-      console.error("Search error:", error);
-      stockList.innerHTML = "<li>Error searching stocks.</li>";
-    }
-  }
-
-  searchBtn.addEventListener("click", performSearch);
-  searchInput.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") performSearch();
-  });
-
-  // Default search
-  searchInput.value = "DANGCEM";
-  performSearch();
-}
-
-// ============ TOP MOVERS ============
-async function loadTopMovers() {
-  const gainersEl = document.getElementById("top-gainers");
-  const losersEl = document.getElementById("top-losers");
-
-  if (!gainersEl || !losersEl) return;
-
-  // Sample African stocks to check
-  const symbols = [
-    "DANGCEM.NL",
-    "MTNN.NL",
-    "ZENITHBANK.NL",
-    "GTCO.NL",
-    "ACCESS.NL",
-    "EZA",
-    "EGY",
-    "MAR",
-  ];
-
+async function renderGainersLosers() {
   try {
-    const results = await Promise.all(
-      symbols.map(async (symbol) => {
-        try {
-          const quote = await stockData.getStockQuote(symbol);
-          if (!quote.c || quote.c === 0) return null;
-          return {
-            symbol,
-            price: quote.c,
-            change: quote.d || 0,
-            changePercent: quote.dp || 0,
-          };
-        } catch {
-          return null;
-        }
-      })
-    );
-
-    const valid = results.filter(Boolean);
-    const sorted = valid.sort((a, b) => b.changePercent - a.changePercent);
-
-    const gainers = sorted.slice(0, 5);
-    const losers = sorted.slice(-5).reverse();
-
-    const renderList = (items) =>
-      items
-        .map(
-          (item) => `
-        <li>
-          <a href="/pages/stock/?symbol=${item.symbol}">
-            <span class="symbol">${item.symbol.replace(".NL", "")}</span>
-            <span class="change ${item.changePercent >= 0 ? "positive" : "negative"}">
-              ${item.changePercent >= 0 ? "▲" : "▼"} ${Math.abs(item.changePercent).toFixed(2)}%
-            </span>
-          </a>
-        </li>
-      `
-        )
-        .join("");
-
-    gainersEl.innerHTML = gainers.length ? renderList(gainers) : "<li>No data</li>";
-    losersEl.innerHTML = losers.length ? renderList(losers) : "<li>No data</li>";
+    const [gainers, losers] = await Promise.all([
+      getTopGainers(5),
+      getTopLosers(5),
+    ]);
+    const [gainersDisplay, losersDisplay] = await Promise.all([
+      convertStockPrices(gainers),
+      convertStockPrices(losers),
+    ]);
+    gainersList.innerHTML = gainersDisplay.map(stockCardTemplate).join("");
+    losersList.innerHTML = losersDisplay.map(stockCardTemplate).join("");
+    animateAllIn(gainersList);
+    animateAllIn(losersList);
   } catch (error) {
-    console.error("Failed to load top movers:", error);
+    console.error("Failed to load gainers/losers:", error);
   }
 }
 
-// ============ SIDEBAR TOGGLE (Mobile) ============
-function initSidebar() {
-  const menuToggle = document.getElementById("menu-toggle");
-  const sidebar = document.getElementById("sidebar");
-  const overlay = document.getElementById("sidebar-overlay");
+async function populateExchangeFilter() {
+  const stocks = await getStocks();
+  const exchanges = listExchanges(stocks);
+  exchangeFilter.innerHTML =
+    "<option value=\"ALL\">All exchanges</option>" +
+    exchanges.map((ex) => `<option value="${ex}">${ex}</option>`).join("");
+}
 
-  if (!menuToggle || !sidebar || !overlay) return;
+async function runSearch() {
+  const query = searchInput.value.trim();
+  const exchange = exchangeFilter.value;
 
-  function openSidebar() {
-    sidebar.classList.add("open");
-    overlay.classList.add("active");
-    document.body.style.overflow = "hidden"; // Prevent background scroll
+  if (!query && exchange === "ALL") {
+    searchSection.hidden = true;
+    gainersLosersSection.hidden = false;
+    return;
   }
 
-  function closeSidebar() {
-    sidebar.classList.remove("open");
-    overlay.classList.remove("active");
-    document.body.style.overflow = "";
-  }
+  const stocks = await getStocks();
+  const results = searchStocks(stocks, query, exchange);
+  const resultsDisplay = await convertStockPrices(results);
 
-  menuToggle.addEventListener("click", openSidebar);
-  overlay.addEventListener("click", closeSidebar);
-
-  // Close when a nav link is clicked
-  sidebar.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", closeSidebar);
-  });
-
-  // Close on Escape key
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeSidebar();
-  });
+  gainersLosersSection.hidden = true;
+  searchSection.hidden = false;
+  searchResultsList.innerHTML = resultsDisplay.length
+    ? resultsDisplay.map(stockCardTemplate).join("")
+    : `<li class="empty-state">No stocks match "${query || exchange}".</li>`;
+  animateAllIn(searchResultsList);
 }
 
-// ============ THEME TOGGLE ============
-function initTheme() {
-  const themeToggle = document.getElementById("theme-toggle");
-  if (!themeToggle) return;
+let searchTimeout;
+searchInput.addEventListener("input", () => {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(runSearch, 200);
+});
+exchangeFilter.addEventListener("change", runSearch);
 
-  // Load saved theme
-  const savedTheme = localStorage.getItem("theme");
-  if (savedTheme === "dark") {
-    document.body.classList.add("dark-mode");
-    themeToggle.textContent = "☀️";
-  }
+window.addEventListener("currencychange", () => {
+  renderGainersLosers();
+  if (!searchSection.hidden) runSearch();
+});
 
-  themeToggle.addEventListener("click", () => {
-    document.body.classList.toggle("dark-mode");
-    const isDark = document.body.classList.contains("dark-mode");
-    themeToggle.textContent = isDark ? "☀️" : "🌙";
-    localStorage.setItem("theme", isDark ? "dark" : "light");
-  });
-}
-
-// ============ USER BUTTON ============
-function initUserButton() {
-  const userBtn = document.getElementById("user-btn");
-  if (!userBtn) return;
-
-  userBtn.addEventListener("click", () => {
-    alert("👤 User account — coming soon!\n\nFuture features:\n• Sign in\n• Save portfolio to cloud\n• Sync across devices");
-  });
-}
-
-
-async function init() {
-  console.log("Pan-African Stock Tracker initialized");
-
-  // Load header/footer FIRST (before anything else that might need the DOM)
-  await loadHeaderFooter();
-
-  initSidebar();
-  initTheme();
-  initUserButton();
-  loadMarketSnapshot();
-  loadTopMovers();
-  initSearch();
-}
-
-init();
-
+renderSnapshot();
+renderGainersLosers();
+populateExchangeFilter();

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Price Alerts | Pan-African Stock Tracker</title>
+    <meta
+      name="description"
+      content="Manage price alerts for African stocks. Get notified when NGX, JSE, or EGX symbols hit your target prices."
+    />
+    <meta name="author" content="Monday Ogedengbe" />
+    <meta name="theme-color" content="#1a1a2e" />
+    <meta
+      property="og:title"
+      content="Price Alerts | Pan-African Stock Tracker"
+    />
+    <meta
+      property="og:description"
+      content="Manage price alerts for African stocks across NGX, JSE, and EGX."
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://pan-african-stock-tracker.onrender.com/alerts/"
+    />
+    <meta
+      property="og:image"
+      content="https://pan-african-stock-tracker.onrender.com/images/social-share.png"
+    />
+    <meta property="og:site_name" content="Pan-African Stock Tracker" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Price Alerts | Pan-African Stock Tracker"
+    />
+    <meta
+      name="twitter:description"
+      content="Manage price alerts for African stocks across NGX, JSE, and EGX."
+    />
+    <meta
+      name="twitter:image"
+      content="https://pan-african-stock-tracker.onrender.com/images/social-share.png"
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <header id="main-header" class="site-header"></header>
+
+    <main>
+      <h1 class="visually-hidden">Price Alerts</h1>
+      <section aria-labelledby="alertsHeading">
+        <h2 id="alertsHeading">Price Alerts</h2>
+        <p class="section-intro">
+          Alerts fire once when the condition is met (checked on each page
+          load). Set new alerts from a stock detail page.
+        </p>
+        <div id="alertsList" class="table-scroll">
+          <div class="spinner" role="status" aria-label="Loading alerts"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="main-footer"></footer>
+    <script type="module" src="/js/alerts.js"></script>
+  </body>
+</html>

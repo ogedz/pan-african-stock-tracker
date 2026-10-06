@@ -1,15 +1,18 @@
 {
-  "name": "pan-african-stocks",
-  "version": "0.0.0",
-  "private": true,
+  "name": "pan-african-stock-tracker",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "start": "vite",
+    "build": "vite build --emptyOutDir",
     "preview": "vite preview",
-    "start": "vite"
+    "lint": "eslint *.js src/**/*.js src/**/*.mjs",
+    "format": "prettier --ignore-path ./.gitignore --write \"./**/*.{html,json,js,mjs,css}\""
   },
   "devDependencies": {
-    "vite": "^8.3.0"
+    "vite": "^5.4.21",
+    "eslint": "^8.57.0",
+    "prettier": "^3.3.3"
   }
 }

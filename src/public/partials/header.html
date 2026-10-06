@@ -1,37 +1,92 @@
-<button id="menu-toggle" class="menu-toggle" aria-label="Open menu">☰</button>
+<button
+  type="button"
+  class="nav-toggle"
+  id="navToggle"
+  aria-label="Open navigation"
+  aria-expanded="false"
+  aria-controls="sidebar"
+>
+  <span class="hamburger" aria-hidden="true"></span>
+</button>
 
-<div class="logo">
-  <a href="/index.html">
-    Pan-African <span class="highlight">Stocks</span>
-  </a>
-</div>
-
-<div class="header-actions">
-  <div class="search-form">
-    <input
-      type="text"
-      id="search-input"
-      placeholder="Search stocks..."
-      aria-label="Search stocks"
-    />
-    <button id="search-btn" aria-label="Search">Search</button>
+<aside class="sidebar" id="sidebar" aria-label="Main navigation">
+  <div class="sidebar-brand">
+    <svg
+      viewBox="0 0 40 40"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      width="32"
+      height="32"
+    >
+      <circle cx="20" cy="20" r="20" fill="#1a1a2e" />
+      <polyline
+        points="9,26 16,18 21,22 31,10"
+        fill="none"
+        stroke="#f4a261"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <polyline
+        points="24,10 31,10 31,17"
+        fill="none"
+        stroke="#f4a261"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+    <span class="sidebar-title">Pan-African Tracker</span>
   </div>
+  <nav class="sidebar-nav">
+    <a href="/index.html" data-nav="home">Home</a>
+    <a href="/portfolio/index.html" data-nav="portfolio">Portfolio</a>
+    <a href="/watchlist/index.html" data-nav="watchlist">Watchlist</a>
+    <a href="/alerts/index.html" data-nav="alerts">Alerts</a>
+    <a href="/settings/index.html" data-nav="settings">Settings</a>
+  </nav>
+</aside>
 
-  <button
-    id="theme-toggle"
-    class="icon-btn"
-    aria-label="Toggle dark mode"
-    title="Toggle dark mode"
-  >
-    🌙
-  </button>
+<div class="sidebar-overlay" id="sidebarOverlay" hidden></div>
 
-  <button
-    id="user-btn"
-    class="icon-btn"
-    aria-label="User account"
-    title="User account"
-  >
-    👤
-  </button>
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-page-title" id="topbarTitle"
+      >Pan-African Stock Tracker</span
+    >
+  </div>
+  <div class="topbar-actions">
+    <select
+      id="currencySelector"
+      class="currency-selector"
+      aria-label="Display currency"
+    ></select>
+    <button
+      id="themeToggle"
+      class="theme-toggle"
+      type="button"
+      aria-label="Toggle dark mode"
+    >
+      🌙
+    </button>
+    <div
+      class="user-avatar"
+      id="userAvatar"
+      role="button"
+      tabindex="0"
+      aria-label="User account"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        width="20"
+        height="20"
+        fill="#f4a261"
+      >
+        <path
+          d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.31 0-10 1.67-10 5v3h20v-3c0-3.33-6.69-5-10-5z"
+        />
+      </svg>
+    </div>
+  </div>
 </div>

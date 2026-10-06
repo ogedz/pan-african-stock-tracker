@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings | Pan-African Stock Tracker</title>
+    <meta
+      name="description"
+      content="Preferences for theme, display currency, and data refresh interval on the Pan-African Stock Tracker."
+    />
+    <meta name="author" content="Monday Ogedengbe" />
+    <meta name="theme-color" content="#1a1a2e" />
+    <meta property="og:title" content="Settings | Pan-African Stock Tracker" />
+    <meta
+      property="og:description"
+      content="Preferences for theme, display currency, and data refresh interval."
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://pan-african-stock-tracker.onrender.com/settings/"
+    />
+    <meta
+      property="og:image"
+      content="https://pan-african-stock-tracker.onrender.com/images/social-share.png"
+    />
+    <meta property="og:site_name" content="Pan-African Stock Tracker" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Settings | Pan-African Stock Tracker" />
+    <meta
+      name="twitter:description"
+      content="Preferences for theme, display currency, and data refresh interval."
+    />
+    <meta
+      name="twitter:image"
+      content="https://pan-african-stock-tracker.onrender.com/images/social-share.png"
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <header id="main-header" class="site-header"></header>
+
+    <main>
+      <h1 class="visually-hidden">Settings</h1>
+      <section aria-labelledby="settingsHeading">
+        <h2 id="settingsHeading">Settings</h2>
+        <form id="settingsForm" class="settings-form">
+          <label>
+            Theme
+            <select id="settingsTheme" name="theme">
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+          </label>
+          <label>
+            Display currency
+            <select id="settingsCurrency" name="currency"></select>
+          </label>
+          <label>
+            Data refresh interval
+            <select id="settingsRefresh" name="refreshInterval">
+              <option value="120000">2 minutes (default)</option>
+              <option value="300000">5 minutes</option>
+              <option value="600000">10 minutes</option>
+              <option value="0">Manual only</option>
+            </select>
+          </label>
+          <div class="action-row">
+            <button type="submit" class="btn btn-primary">
+              Save preferences
+            </button>
+            <button type="button" id="clearCacheBtn" class="btn btn-secondary">
+              Clear cached market data
+            </button>
+          </div>
+          <p
+            id="settingsStatus"
+            class="settings-status"
+            role="status"
+            aria-live="polite"
+          ></p>
+        </form>
+      </section>
+    </main>
+
+    <footer id="main-footer"></footer>
+    <script type="module" src="/js/settings.js"></script>
+  </body>
+</html>

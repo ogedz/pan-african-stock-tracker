@@ -1,0 +1,26 @@
+[
+  {
+    "exchange": "NGX",
+    "name": "NGX All-Share Index",
+    "value": 102345.67,
+    "changePercent": 1.24
+  },
+  {
+    "exchange": "JSE",
+    "name": "FTSE/JSE All Share",
+    "value": 78921.4,
+    "changePercent": -0.42
+  },
+  {
+    "exchange": "EGX",
+    "name": "EGX 30",
+    "value": 30112.9,
+    "changePercent": 0.87
+  },
+  {
+    "exchange": "NSE",
+    "name": "NSE 20 (Kenya)",
+    "value": 1789.3,
+    "changePercent": 0.15
+  }
+]

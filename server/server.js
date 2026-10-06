@@ -26,9 +26,9 @@ app.use(
     origin: [
       "http://localhost:5173",
       "http://localhost:4173",
-      "https://pan-african-stock-tracker-1.onrender.com", 
+      "https://pan-african-stock-tracker-1.onrender.com",
     ],
-  })
+  }),
 );
 
 app.use(express.json());
@@ -77,7 +77,7 @@ app.get("/api/stocks/search", async (req, res) => {
     }
 
     const url = `${FINNHUB_BASE_URL}/search?q=${encodeURIComponent(
-      query
+      query,
     )}&token=${FINNHUB_API_KEY}`;
 
     const response = await fetch(url);
@@ -160,12 +160,12 @@ app.listen(PORT, () => {
   console.log(
     `🔑 NGN API Key: ${NGN_API_KEY ? "YES" : "NO"} (length: ${
       NGN_API_KEY?.length || 0
-    })`
+    })`,
   );
   console.log(
     `🔑 Finnhub API Key: ${FINNHUB_API_KEY ? "YES" : "NO"} (length: ${
       FINNHUB_API_KEY?.length || 0
-    })`
+    })`,
   );
   console.log(`🌐 NGN Base URL: ${NGN_BASE_URL}`);
 });
