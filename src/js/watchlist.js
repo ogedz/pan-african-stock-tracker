@@ -1,6 +1,6 @@
 import { getStocks } from "./StockData.mjs";
 import { getWatchlist, removeFromWatchlist } from "./Watchlist.mjs";
-import { formatPercent, loadHeaderFooter, qs, animateAllIn } from "./Utils.mjs";
+import { formatPercent, loadHeaderFooter, qs, animateAllIn } from "./utils.mjs";
 import { convertStockPrices, currencySymbol } from "./Currency.mjs";
 import { showToast } from "./Toast.mjs";
 

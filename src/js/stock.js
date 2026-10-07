@@ -13,7 +13,7 @@ import {
   loadHeaderFooter,
   qs,
   animateAllIn,
-} from "./Utils.mjs";
+} from "./utils.mjs";
 import { convertStockPrices, currencySymbol } from "./Currency.mjs";
 import { showToast } from "./Toast.mjs";
 

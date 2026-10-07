@@ -1,6 +1,6 @@
 import { getAlerts, removeAlert, checkAlerts } from "./Alerts.mjs";
 import { getStocks } from "./StockData.mjs";
-import { formatNumber, loadHeaderFooter, qs } from "./Utils.mjs";
+import { formatNumber, loadHeaderFooter, qs } from "./utils.mjs";
 import { showToast } from "./Toast.mjs";
 
 loadHeaderFooter();

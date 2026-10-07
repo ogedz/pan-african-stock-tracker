@@ -1,4 +1,4 @@
-import { loadHeaderFooter, qs } from "./Utils.mjs";
+import { loadHeaderFooter, qs } from "./utils.mjs";
 import {
   getPreferredCurrency,
   setPreferredCurrency,

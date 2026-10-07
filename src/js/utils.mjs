@@ -181,7 +181,7 @@ function setActiveNav() {
 // Populates the currency selector in the header and wires it to
 // Currency.mjs's stored preference. Dispatches a "currencychange" event
 // on window so each page's own script can re-render prices without
-// Utils.mjs needing to know what any given page looks like.
+// utils.mjs needing to know what any given page looks like.
 function initCurrencySelector() {
   const select = qs("#currencySelector");
   if (!select) return;

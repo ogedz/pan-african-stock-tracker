@@ -6,7 +6,7 @@ import {
   getDataSourceStatus,
 } from "./StockData.mjs";
 import { searchStocks, listExchanges } from "./Search.mjs";
-import { formatPercent, loadHeaderFooter, qs, animateAllIn } from "./Utils.mjs";
+import { formatPercent, loadHeaderFooter, qs, animateAllIn } from "./utils.mjs";
 import { convertStockPrices, currencySymbol } from "./Currency.mjs";
 
 loadHeaderFooter();

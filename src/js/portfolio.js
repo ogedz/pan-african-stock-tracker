@@ -5,7 +5,7 @@ import {
   calculateTotals,
   removeHolding,
 } from "./Portfolio.mjs";
-import { formatNumber, formatPercent, loadHeaderFooter, qs } from "./Utils.mjs";
+import { formatNumber, formatPercent, loadHeaderFooter, qs } from "./utils.mjs";
 import { currencySymbol } from "./Currency.mjs";
 import { showToast } from "./Toast.mjs";
 
