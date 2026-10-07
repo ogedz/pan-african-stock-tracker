@@ -1,8 +1,19 @@
 import { getStocks } from "./StockData.mjs";
 import { getWatchlist, removeFromWatchlist } from "./Watchlist.mjs";
-import { formatPercent, loadHeaderFooter, qs, animateAllIn } from "./utils.mjs";
+import {
+  formatPercent,
+  loadHeaderFooter,
+  qs,
+  animateAllIn,
+  renderBreadcrumb,
+} from "./utils.mjs";
 import { convertStockPrices, currencySymbol } from "./Currency.mjs";
 import { showToast } from "./Toast.mjs";
+
+renderBreadcrumb([
+  { label: "Home", href: "/index.html" },
+  { label: "Watchlist" },
+]);
 
 loadHeaderFooter();
 

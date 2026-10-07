@@ -1,7 +1,14 @@
 import { getAlerts, removeAlert, checkAlerts } from "./Alerts.mjs";
 import { getStocks } from "./StockData.mjs";
-import { formatNumber, loadHeaderFooter, qs } from "./utils.mjs";
+import {
+  formatNumber,
+  loadHeaderFooter,
+  qs,
+  renderBreadcrumb,
+} from "./utils.mjs";
 import { showToast } from "./Toast.mjs";
+
+renderBreadcrumb([{ label: "Home", href: "/index.html" }, { label: "Alerts" }]);
 
 loadHeaderFooter();
 

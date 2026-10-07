@@ -42,3 +42,36 @@ export function renderLineChart(history, container, options = {}) {
     </svg>
   `;
 }
+
+// Sparkline — a tiny line chart for stock cards.
+
+export function renderSparkline(history, container, options = {}) {
+  const width = options.width || 120;
+  const height = options.height || 30;
+  const padding = 2;
+
+  if (!history || history.length < 2) {
+    container.innerHTML = "";
+    return;
+  }
+
+  const min = Math.min(...history);
+  const max = Math.max(...history);
+  const range = max - min || 1;
+
+  const points = history.map((value, i) => {
+    const x = padding + (i / (history.length - 1)) * (width - padding * 2);
+    const y =
+      height - padding - ((value - min) / range) * (height - padding * 2);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  });
+
+  const isUp = history[history.length - 1] >= history[0];
+  const strokeColor = isUp ? "#2c7a4d" : "#dc3545";
+
+  container.innerHTML = `
+    <svg viewBox="0 0 ${width} ${height}" width="100%" height="${height}" role="img" aria-label="30-day price trend">
+      <polyline points="${points.join(" ")}" fill="none" stroke="${strokeColor}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"></polyline>
+    </svg>
+  `;
+}

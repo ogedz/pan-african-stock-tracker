@@ -1,3 +1,4 @@
+// src/js/portfolio.js
 import { getStocks } from "./StockData.mjs";
 import {
   getHoldings,
@@ -5,27 +6,44 @@ import {
   calculateTotals,
   removeHolding,
 } from "./Portfolio.mjs";
-import { formatNumber, formatPercent, loadHeaderFooter, qs } from "./utils.mjs";
+import {
+  formatNumber,
+  formatPercent,
+  loadHeaderFooter,
+  qs,
+  renderBreadcrumb,
+} from "./utils.mjs";
 import { currencySymbol } from "./Currency.mjs";
 import { showToast } from "./Toast.mjs";
+import { renderLineChart } from "./Charts.mjs";
 
-// Note: holdings stay in the currency they were purchased in (a NGX
-// stock's cost basis and current price are both NGN, a JSE stock's are
-// both ZAR), so per-row gain/loss math never needs conversion. The
-// header currency selector only affects the homepage, stock detail,
-// and watchlist — converting a mixed-currency portfolio total would
-// need its own clearly-labeled "converted total" row, not a silent
-// swap, so it's left as a documented next step.
+renderBreadcrumb([
+  { label: "Home", href: "/index.html" },
+  { label: "Portfolio" },
+]);
 
 loadHeaderFooter();
 
+const statsEl = qs("#portfolioStats");
+const performanceSection = qs("#performanceSection");
+const performanceChart = qs("#performanceChart");
+const performanceRanges = qs("#performanceRanges");
 const summaryEl = qs("#portfolioSummary");
 const tableWrap = qs("#portfolioTableWrap");
+
+// Cached positions to avoid re-fetching
+let cachedPositions = null;
+let cachedStocks = null;
+
+const RANGE_POINTS = { "1W": 7, "1M": 22, "3M": 66, "1Y": 90 };
+let currentRange = "1M";
 
 async function render() {
   const holdings = getHoldings();
 
   if (holdings.length === 0) {
+    statsEl.innerHTML = "";
+    performanceSection.hidden = true;
     summaryEl.innerHTML = "";
     tableWrap.innerHTML = `
       <div class="empty-state">
@@ -37,15 +55,130 @@ async function render() {
   }
 
   const stocks = await getStocks();
+  cachedStocks = stocks;
   const positions = calculatePositions(holdings, stocks);
+  cachedPositions = positions;
   const totals = calculateTotals(positions);
-  const dir = totals.gain >= 0 ? "up" : "down";
 
+  renderStats(positions, totals);
+  renderPerformanceChart(positions);
+  renderSummary(positions, totals);
+  renderTable(positions);
+
+  wireRangeButtons();
+}
+
+// ============ STATS CARDS ============
+function renderStats(positions, totals) {
+  const dir = totals.gain >= 0 ? "up" : "down";
+  const gainPercent =
+    totals.invested > 0 ? (totals.gain / totals.invested) * 100 : 0;
+
+  // Find best/worst performers
+  const sorted = [...positions].sort((a, b) => b.gainPercent - a.gainPercent);
+  const best = sorted[0];
+  const worst = sorted[sorted.length - 1];
+
+  statsEl.innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Total Value</div>
+      <div class="stat-value mono">${formatNumber(totals.currentValue)}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Gain/Loss</div>
+      <div class="stat-value mono ${dir}">
+        ${totals.gain >= 0 ? "+" : ""}${formatNumber(totals.gain)}
+      </div>
+      <div class="stat-change ${dir}">${formatPercent(gainPercent)}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Holdings</div>
+      <div class="stat-value mono">${positions.length}</div>
+    </div>
+    ${
+      positions.length >= 2
+        ? `
+    <div class="stat-card">
+      <div class="stat-label">Best Performer</div>
+      <div class="stat-value mono">${best.symbol}</div>
+      <div class="stat-change up">${formatPercent(best.gainPercent)}</div>
+    </div>
+    `
+        : ""
+    }
+  `;
+}
+
+// ============ PERFORMANCE CHART ============
+function renderPerformanceChart(positions) {
+  performanceSection.hidden = false;
+
+  const points = RANGE_POINTS[currentRange];
+
+  // Build daily total value across the range
+  // Each position has a history array; add up shares * price for each day
+  const maxDays = Math.min(
+    points,
+    ...positions.map((p) => {
+      const stock = cachedStocks.find((s) => s.symbol === p.symbol);
+      return stock?.history?.length || 0;
+    }),
+  );
+
+  if (maxDays < 2) {
+    performanceChart.innerHTML =
+      "<p style='opacity:.6'>Not enough history data yet.</p>";
+    return;
+  }
+
+  const dailyTotals = [];
+  for (let i = -maxDays; i < 0; i++) {
+    let dayTotal = 0;
+    positions.forEach((p) => {
+      const stock = cachedStocks.find((s) => s.symbol === p.symbol);
+      if (stock?.history && stock.history.length > 0) {
+        const histIndex = stock.history.length + i;
+        if (histIndex >= 0 && histIndex < stock.history.length) {
+          dayTotal += stock.history[histIndex] * p.shares;
+        }
+      }
+    });
+    dailyTotals.push(dayTotal);
+  }
+
+  renderLineChart(dailyTotals, performanceChart, {
+    width: 600,
+    height: 220,
+  });
+}
+
+// ============ RANGE BUTTONS ============
+function wireRangeButtons() {
+  if (!performanceRanges || performanceRanges.dataset.wired === "true") return;
+  performanceRanges.dataset.wired = "true";
+
+  performanceRanges.querySelectorAll("button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      performanceRanges
+        .querySelectorAll("button")
+        .forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentRange = btn.dataset.range;
+      if (cachedPositions) renderPerformanceChart(cachedPositions);
+    });
+  });
+}
+
+// ============ SUMMARY + TABLE ============
+function renderSummary(positions, totals) {
+  const dir = totals.gain >= 0 ? "up" : "down";
   summaryEl.innerHTML = `
     <p>Total value: <strong class="mono">${formatNumber(totals.currentValue)}</strong>
     &middot; Total gain/loss: <strong class="mono ${dir}">${totals.gain >= 0 ? "+" : ""}${formatNumber(totals.gain)}</strong></p>
   `;
+}
 
+function renderTable(positions) {
   tableWrap.innerHTML = `
     <div class="table-scroll">
     <table>

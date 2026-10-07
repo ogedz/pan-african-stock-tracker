@@ -1,4 +1,4 @@
-import { loadHeaderFooter, qs } from "./utils.mjs";
+import { loadHeaderFooter, qs, renderBreadcrumb } from "./utils.mjs";
 import {
   getPreferredCurrency,
   setPreferredCurrency,
@@ -6,6 +6,11 @@ import {
 } from "./Currency.mjs";
 import { getItem, setItem, removeItem, KEYS } from "./Storage.mjs";
 import { showToast } from "./Toast.mjs";
+
+renderBreadcrumb([
+  { label: "Home", href: "/index.html" },
+  { label: "Settings" },
+]);
 
 loadHeaderFooter();
 

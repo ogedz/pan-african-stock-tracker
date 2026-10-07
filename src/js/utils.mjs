@@ -255,3 +255,48 @@ export function animateAllIn(container) {
     animateNumber(el, endValue, { decimals, prefix });
   });
 }
+
+export function renderBreadcrumb(crumbs) {
+  const el = qs("#breadcrumb");
+  if (!el) return;
+
+  el.innerHTML = crumbs
+    .map((crumb, i) => {
+      const isLast = i === crumbs.length - 1;
+      if (isLast || !crumb.href) {
+        return `<span class="breadcrumb-current" aria-current="page">${crumb.label}</span>`;
+      }
+      return `<a href="${crumb.href}">${crumb.label}</a>`;
+    })
+    .join('<span class="breadcrumb-sep"> › </span>');
+}
+
+export function initKeyboardShortcuts() {
+  document.addEventListener("keydown", (e) => {
+    const activeEl = document.activeElement;
+    const isTyping =
+      activeEl &&
+      (activeEl.tagName === "INPUT" ||
+        activeEl.tagName === "TEXTAREA" ||
+        activeEl.isContentEditable);
+
+    // "/" focuses search input (only if not already typing)
+    if (e.key === "/" && !isTyping) {
+      e.preventDefault();
+      const searchInput = document.querySelector("#searchInput");
+      if (searchInput) {
+        searchInput.focus();
+        // Optional: select existing text
+        searchInput.select?.();
+      }
+    }
+
+    // Escape blurs the focused input
+    if (
+      e.key === "Escape" &&
+      activeEl === document.querySelector("#searchInput")
+    ) {
+      activeEl.blur();
+    }
+  });
+}

@@ -6,10 +6,21 @@ import {
   getDataSourceStatus,
 } from "./StockData.mjs";
 import { searchStocks, listExchanges } from "./Search.mjs";
-import { formatPercent, loadHeaderFooter, qs, animateAllIn } from "./utils.mjs";
+import {
+  formatPercent,
+  loadHeaderFooter,
+  qs,
+  animateAllIn,
+  renderBreadcrumb,
+  initKeyboardShortcuts,
+} from "./utils.mjs";
 import { convertStockPrices, currencySymbol } from "./Currency.mjs";
+import { renderSparkline } from "./Charts.mjs";
+
+renderBreadcrumb([{ label: "Home" }]);
 
 loadHeaderFooter();
+initKeyboardShortcuts();
 
 const snapshotGrid = qs("#snapshotGrid");
 const searchInput = qs("#searchInput");
@@ -32,11 +43,27 @@ function indexCardTemplate(index) {
   `;
 }
 
-// Expects stocks already enriched by convertStockPrices (displayPrice,
-// displayChange, displayCurrency present).
+function renderSparklines(container) {
+  if (!container) return;
+  container.querySelectorAll(".sparkline").forEach((el) => {
+    try {
+      const history = JSON.parse(el.dataset.history || "[]");
+      if (history.length > 1) {
+        // Show last 30 points for a cleaner look
+        renderSparkline(history.slice(-30), el, { width: 120, height: 30 });
+      }
+    } catch (error) {
+      console.warn("Sparkline render failed:", error);
+    }
+  });
+}
+
 function stockCardTemplate(stock) {
   const dir = stock.changePercent >= 0 ? "up" : "down";
   const symbol = currencySymbol(stock.displayCurrency);
+  // Unique ID for the sparkline container
+  const sparklineId = `spark-${stock.symbol}-${Math.random().toString(36).slice(2, 8)}`;
+
   return `
     <li class="stock-card fade-in">
       <a href="/stock/index.html?symbol=${stock.symbol}">
@@ -46,6 +73,7 @@ function stockCardTemplate(stock) {
           <span class="mono" data-animate="${stock.displayPrice}" data-decimals="2" data-prefix="${symbol}">${symbol}0.00</span>
           <span class="${dir}">${formatPercent(stock.changePercent)}</span>
         </div>
+        <div class="sparkline" id="${sparklineId}" data-history='${JSON.stringify(stock.history || [])}'></div>
       </a>
     </li>
   `;
@@ -68,7 +96,8 @@ function renderDataSourceBadge() {
   const stocksLive = status.stocks === "live";
   const indicesLive = status.indices === "live";
   if (stocksLive || indicesLive) {
-    existing.innerHTML = "<span class=\"badge-live\">Live data</span> — prices refreshed from API (cached up to 2 min).";
+    existing.innerHTML =
+      '<span class="badge-live">Live data</span> — prices refreshed from API (cached up to 2 min).';
     existing.classList.remove("is-sample");
   } else {
     const reasons = [status.ngnError, status.finnhubError]
@@ -105,6 +134,8 @@ async function renderGainersLosers() {
     losersList.innerHTML = losersDisplay.map(stockCardTemplate).join("");
     animateAllIn(gainersList);
     animateAllIn(losersList);
+    renderSparklines(gainersList);
+    renderSparklines(losersList);
   } catch (error) {
     console.error("Failed to load gainers/losers:", error);
   }
@@ -114,7 +145,7 @@ async function populateExchangeFilter() {
   const stocks = await getStocks();
   const exchanges = listExchanges(stocks);
   exchangeFilter.innerHTML =
-    "<option value=\"ALL\">All exchanges</option>" +
+    '<option value="ALL">All exchanges</option>' +
     exchanges.map((ex) => `<option value="${ex}">${ex}</option>`).join("");
 }
 
@@ -138,6 +169,7 @@ async function runSearch() {
     ? resultsDisplay.map(stockCardTemplate).join("")
     : `<li class="empty-state">No stocks match "${query || exchange}".</li>`;
   animateAllIn(searchResultsList);
+  renderSparklines(searchResultsList);
 }
 
 let searchTimeout;

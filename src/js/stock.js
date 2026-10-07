@@ -13,6 +13,7 @@ import {
   loadHeaderFooter,
   qs,
   animateAllIn,
+  renderBreadcrumb,
 } from "./utils.mjs";
 import { convertStockPrices, currencySymbol } from "./Currency.mjs";
 import { showToast } from "./Toast.mjs";
@@ -20,12 +21,8 @@ import { showToast } from "./Toast.mjs";
 loadHeaderFooter();
 
 const main = qs("#stockMain");
-const symbol = getParam("symbol");
+const symbol = getParam("symbol"); // ← Only here (once)
 
-// Sample history holds 90 points (~1 trading quarter). 1Y reuses the
-// full array since the sample data doesn't go back a full year yet;
-// swap in real per-range API data before relying on this for anything
-// beyond a demo.
 const RANGE_POINTS = { "1W": 7, "1M": 22, "3M": 66, "1Y": 90 };
 const DEFAULT_RANGE = "1M";
 
@@ -33,7 +30,8 @@ let currentStock = null;
 
 async function init() {
   if (!symbol) {
-    main.innerHTML = "<p class=\"empty-state\">No stock selected. <a href=\"/index.html\">Go back to search.</a></p>";
+    main.innerHTML =
+      '<p class="empty-state">No stock selected. <a href="/index.html">Go back to search.</a></p>';
     return;
   }
 
@@ -42,6 +40,12 @@ async function init() {
     main.innerHTML = `<p class="empty-state">Stock "${symbol}" not found. <a href="/index.html">Go back to search.</a></p>`;
     return;
   }
+
+  renderBreadcrumb([
+    { label: "Home", href: "/index.html" },
+    { label: "Stocks", href: "/index.html" },
+    { label: symbol },
+  ]);
 
   currentStock = stock;
   await render(stock);

@@ -10,47 +10,40 @@
     />
     <meta name="author" content="Monday Ogedengbe" />
     <meta name="theme-color" content="#1a1a2e" />
-    <meta
-      property="og:title"
-      content="My Portfolio | Pan-African Stock Tracker"
-    />
-    <meta
-      property="og:description"
-      content="Track your African stock holdings with live gain and loss calculations."
-    />
-    <meta property="og:type" content="website" />
-    <meta
-      property="og:url"
-      content="https://pan-african-stock-tracker.onrender.com/portfolio/"
-    />
-    <meta
-      property="og:image"
-      content="https://pan-african-stock-tracker.onrender.com/images/social-share.png"
-    />
-    <meta property="og:site_name" content="Pan-African Stock Tracker" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta
-      name="twitter:title"
-      content="My Portfolio | Pan-African Stock Tracker"
-    />
-    <meta
-      name="twitter:description"
-      content="Track your African stock holdings with live gain and loss calculations."
-    />
-    <meta
-      name="twitter:image"
-      content="https://pan-african-stock-tracker.onrender.com/images/social-share.png"
-    />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="/css/style.css" />
   </head>
   <body>
     <header id="main-header" class="site-header"></header>
 
+    <div class="breadcrumb-wrapper">
+      <nav id="breadcrumb" class="breadcrumb" aria-label="Breadcrumb"></nav>
+    </div>
+
     <main>
       <h1 class="visually-hidden">My Portfolio</h1>
+
       <section aria-labelledby="portfolioHeading">
         <h2 id="portfolioHeading">My Portfolio</h2>
+
+        <!-- NEW: Performance summary cards -->
+        <div id="portfolioStats" class="portfolio-stats"></div>
+
+        <!-- NEW: Performance chart -->
+        <div id="performanceSection" class="performance-section" hidden>
+          <div class="chart-container">
+            <h3>Portfolio Performance</h3>
+            <div id="performanceChart"></div>
+            <div class="range-buttons" id="performanceRanges">
+              <button data-range="1W">1W</button>
+              <button data-range="1M" class="active">1M</button>
+              <button data-range="3M">3M</button>
+              <button data-range="1Y">1Y</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Existing summary + table -->
         <div id="portfolioSummary" class="portfolio-summary"></div>
         <div id="portfolioTableWrap" class="table-scroll"></div>
       </section>
