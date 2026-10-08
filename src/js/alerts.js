@@ -1,3 +1,4 @@
+// src/js/alerts.js
 import { getAlerts, removeAlert, checkAlerts } from "./Alerts.mjs";
 import { getStocks } from "./StockData.mjs";
 import {
@@ -6,6 +7,7 @@ import {
   qs,
   renderBreadcrumb,
 } from "./utils.mjs";
+import { currencySymbol } from "./Currency.mjs";
 import { showToast } from "./Toast.mjs";
 
 renderBreadcrumb([{ label: "Home", href: "/index.html" }, { label: "Alerts" }]);
@@ -33,6 +35,7 @@ async function render() {
     .map((alert, index) => {
       const stock = stocks.find((s) => s.symbol === alert.symbol);
       const current = stock ? stock.price : null;
+      const currency = stock ? currencySymbol(stock.currency) : "";
       const isTriggered = triggered.some(
         (t) =>
           t.symbol === alert.symbol &&
@@ -45,8 +48,8 @@ async function render() {
         <tr>
           <td><a href="/stock/index.html?symbol=${encodeURIComponent(alert.symbol)}"><strong>${alert.symbol}</strong></a></td>
           <td>${alert.condition === "above" ? "Above" : "Below"}</td>
-          <td class="mono">${formatNumber(alert.targetPrice)}</td>
-          <td class="mono">${current != null ? formatNumber(current) : "—"}</td>
+          <td class="mono">${currency}${formatNumber(alert.targetPrice)}</td>
+          <td class="mono">${current != null ? `${currency}${formatNumber(current)}` : "—"}</td>
           <td class="${statusClass}">${status}</td>
           <td><button type="button" class="btn btn-secondary btn-sm" data-remove="${index}">Remove</button></td>
         </tr>`;

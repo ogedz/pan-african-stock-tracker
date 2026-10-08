@@ -21,7 +21,7 @@ import { showToast } from "./Toast.mjs";
 loadHeaderFooter();
 
 const main = qs("#stockMain");
-const symbol = getParam("symbol"); // ← Only here (once)
+const symbol = getParam("symbol");
 
 const RANGE_POINTS = { "1W": 7, "1M": 22, "3M": 66, "1Y": 90 };
 const DEFAULT_RANGE = "1M";
@@ -54,7 +54,8 @@ async function init() {
 async function render(stock) {
   const [display] = await convertStockPrices([stock]);
   const dir = stock.changePercent >= 0 ? "up" : "down";
-  const currency = currencySymbol(display.displayCurrency);
+  const displayCurrency = currencySymbol(display.displayCurrency);
+  const nativeCurrency = currencySymbol(stock.currency);
   const watched = isWatched(stock.symbol);
 
   main.innerHTML = `
@@ -64,8 +65,8 @@ async function render(stock) {
         <p class="stock-sub">${stock.name} &middot; ${stock.exchange}</p>
       </div>
       <div>
-        <div class="price mono" data-animate="${display.displayPrice}" data-decimals="2" data-prefix="${currency}">${currency}0.00</div>
-        <div class="${dir}">${display.displayChange >= 0 ? "+" : ""}${formatNumber(display.displayChange)} ${currency} today</div>
+        <div class="price mono" data-animate="${display.displayPrice}" data-decimals="2" data-prefix="${displayCurrency}">${displayCurrency}0.00</div>
+        <div class="${dir}">${display.displayChange >= 0 ? "+" : ""}${formatNumber(display.displayChange)} ${displayCurrency} today</div>
       </div>
     </section>
 
@@ -92,7 +93,7 @@ async function render(stock) {
       <form method="dialog" id="portfolioForm">
         <h3>Add ${stock.symbol} to Portfolio</h3>
         <label>Shares<input type="number" name="shares" min="1" step="1" required /></label>
-        <label>Purchase price (${stock.currency})<input type="number" name="purchasePrice" min="0" step="0.01" value="${stock.price}" required /></label>
+        <label>Purchase price (${nativeCurrency})<input type="number" name="purchasePrice" min="0" step="0.01" value="${stock.price}" required /></label>
         <div class="action-row">
           <button value="cancel" class="btn btn-secondary">Cancel</button>
           <button value="confirm" class="btn btn-primary">Add</button>
@@ -109,7 +110,7 @@ async function render(stock) {
             <option value="below">below</option>
           </select>
         </label>
-        <label>Target price (${stock.currency})<input type="number" name="targetPrice" min="0" step="0.01" value="${stock.price}" required /></label>
+        <label>Target price (${nativeCurrency})<input type="number" name="targetPrice" min="0" step="0.01" value="${stock.price}" required /></label>
         <div class="action-row">
           <button value="cancel" class="btn btn-secondary">Cancel</button>
           <button value="confirm" class="btn btn-primary">Set Alert</button>
@@ -124,7 +125,7 @@ async function render(stock) {
     qs("#chart"),
   );
   wireRangeButtons(stock);
-  wireActions(stock);
+  wireActions(stock, nativeCurrency);
 }
 
 function wireRangeButtons(stock) {
@@ -139,7 +140,7 @@ function wireRangeButtons(stock) {
   });
 }
 
-function wireActions(stock) {
+function wireActions(stock, nativeCurrency) {
   const watchBtn = qs("#watchBtn");
   watchBtn.addEventListener("click", () => {
     if (isWatched(stock.symbol)) {
@@ -174,7 +175,7 @@ function wireActions(stock) {
     const form = e.target;
     addAlert(stock.symbol, form.targetPrice.value, form.condition.value);
     showToast(
-      `Alert set: notify when ${stock.symbol} goes ${form.condition.value} ${form.targetPrice.value}.`,
+      `Alert set: notify when ${stock.symbol} goes ${form.condition.value} ${nativeCurrency}${form.targetPrice.value}.`,
       "success",
     );
   });

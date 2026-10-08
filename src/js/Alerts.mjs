@@ -5,6 +5,7 @@
 import { getItem, setItem, KEYS } from "./Storage.mjs";
 import { getStocks } from "./StockData.mjs";
 import { showToast } from "./Toast.mjs";
+import { currencySymbol } from "./Currency.mjs";
 
 export function getAlerts() {
   return getItem(KEYS.ALERTS, []);
@@ -66,8 +67,9 @@ export async function checkAndNotify() {
         ? stock.price >= alert.targetPrice
         : stock.price <= alert.targetPrice;
     if (met) {
+      const currency = currencySymbol(stock.currency);
       showToast(
-        `\ud83d\udd14 ${alert.symbol} is now ${alert.condition} ${alert.targetPrice} (currently ${stock.price.toFixed(2)})`,
+        `\ud83d\udd14 ${alert.symbol} is now ${alert.condition} ${currency}${alert.targetPrice} (currently ${currency}${stock.price.toFixed(2)})`,
         "alert",
         7000,
       );
